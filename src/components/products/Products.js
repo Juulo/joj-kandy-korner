@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react"
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min"
+import { getAllProducts } from "../ApiManager"
 
 export const Products = () => {
     const [products, setProduct] = useState([])
@@ -14,8 +15,7 @@ export const Products = () => {
 
     useEffect(
         () => {
-            fetch("http://localhost:8088/products?_expand=productType&_sort=productTypeId&_order=desc")
-                .then(res => res.json())
+            getAllProducts()
                 .then((productArray) => {
                     setProduct(productArray)
                 })
