@@ -31,20 +31,28 @@ export const CustomerPurchase = () => {
     const createLineItem = () => {
         // create a blank Map
         const aggragateMap = new Map()
-        // iterate over customer purchase
+        // iterate over customer purchases
         for (const purchase of purchases) {
-            // check if object has current product.id as its key
-            if (aggragateMap.has(purchase.productId && purchase.product.price)) {
-                // increment the value property by 1
-                aggragateMap.set(purchase.productId, (aggragateMap.get(purchase.productId)) + 1)
-                // aggragateMap.set(purchase.product.price, (aggragateMap.get(purchase.product.price)) + purchase.product.price)
+            // check if object has current product.id as a key
+            if (aggragateMap.has(purchase.productId)) {
+                // if we do, create an object as a copy of our map and set its value equal to the key we get from our map
+                let copyOfAggragate = aggragateMap.get(purchase.productId)
+                // set the values of that copy to the values that we want
+                //quantity increases by 1
+                copyOfAggragate.quantity = copyOfAggragate.quantity + 1
+
+                // totalPrice increases by by the amount of the product price
+                copyOfAggragate.totalPrice = copyOfAggragate.totalPrice + purchase.product.price
+                
+                // set our map's key value to equal our new copy
+                aggragateMap.set(purchase.productId, copyOfAggragate)
+                
             }
             // if not add a new key/value pair
             else{
-                // key will be an object with the products id property
-                // the value will be a quantity
-                aggragateMap.set(purchase.productId, 1)
-                // aggragateMap.set(purchase.product.price, purchase.product.price)
+                // our key will have a value that is an object with a quantity and a total price
+                aggragateMap.set(purchase.productId, {quantity: 1, totalPrice: purchase.product.price})
+                
             }
         }
 
@@ -58,12 +66,12 @@ export const CustomerPurchase = () => {
             <h2>Your Orders</h2>
             {
                 purchases.map((purchase) => {
-                    if (!productShown.includes(purchase.productId)) {
-                        productShown.push(purchase.productId)
-                        for (const [productId, purchaseQuantity] of aggragateMap) {
-                            if(productId === purchase.productId) {
-                                return <div>
-                                    <p key={`purchases--${purchase.id}`}>{purchase.product.name} Quantity {purchaseQuantity} {purchase.product.price}</p>
+                    if (!productShown.includes(purchase.productId)) { //if our product isn't in our product shown array
+                        productShown.push(purchase.productId)   //push it into product shown array
+                        for (const [productId, productObject] of aggragateMap) {    // then for every product of aggragateMap
+                            if(productId === purchase.productId) {  //if the productId key matches purchase.productId return html
+                                return <div> 
+                                    <p key={`purchases--${purchase.id}`}>{purchase.product.name} Quantity {productObject.quantity} {productObject.totalPrice}</p>
                                         </div>
                             }
                         }
